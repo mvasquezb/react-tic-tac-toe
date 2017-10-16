@@ -53,3 +53,7 @@ ul {
 .selected-step {
   font-weight: bold;
 }
+
+.winning-square {
+  color: red;
+}

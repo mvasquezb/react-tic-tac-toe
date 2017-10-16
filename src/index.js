@@ -121,28 +121,68 @@ class Game extends React.Component {
 }
 
 function calculateWinner(squares) {
-  const lines = [
-    [0, 1, 2],
-    [3, 4, 5],
-    [6, 7, 8],
-    [0, 3, 6],
-    [1, 4, 7],
-    [2, 5, 8],
-    [0, 4, 8],
-    [2, 4, 6],
-  ];
+  const boardSize = Math.sqrt(squares.length);
   var winner = null;
-  for (let line of lines) {
-    const [a, b, c] = line;
-    if (squares[a] && squares[a] === squares[b] && squares[a] === squares[c]) {
-      winner = squares[a];
+  
+  // Check rows
+  for (let i = 0; i < boardSize; i++) {
+    const begin = boardSize * i;
+    const row = squares.slice(begin, begin + boardSize);
+    winner = row.reduce((acc, value) => {
+      return acc === value ? acc : null;
+    });
+    if (winner) {
       break;
     }
+  }
+  if (winner) {
+    return winner;
+  }
+
+  // Check columns
+  for (let i = 0; i < boardSize; i++) {
+    const column = [];
+    for (let j = 0; j < boardSize; j++) {
+      column.push(squares[i + boardSize * j]);
+    }
+    winner = column.reduce((acc, value) => {
+      return acc === value ? acc : null;
+    });
+    if (winner) {
+      break;
+    }
+  }
+  if (winner) {
+    return winner;
+  }
+
+  // Check diagonals
+  let prev = false;
+  for (let i = 0; i < boardSize; i++) {
+    const value = squares[i + boardSize * i];
+    if (prev === false || prev === value) {
+      prev = value;
+    }
+  }
+  winner = prev ? prev : winner;
+  if (winner) {
+    return winner;
+  }
+  prev = false;
+  for (let i = 0; i < boardSize; i++) {
+    const value = squares[(boardSize - 1) * (i + 1)];
+    if (prev === false || prev === value) {
+      prev = value;
+    }
+  }
+  winner = prev ? prev : winner;
+  if (winner) {
+    return winner;
   }
   return winner;
 }
 
 ReactDOM.render(
-  <Game boardSize={3} />,
+  <Game boardSize={4} />,
   document.querySelector("#root")
 );

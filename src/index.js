@@ -18,29 +18,25 @@ class Board extends React.Component {
   renderSquare(i) {
     return (
       <Square 
+        key={i}
         value={this.props.squares[i]}
         onClick={() => this.props.onClick(i)} />
     );
   }
 
   render() {
+    var board = Array(this.props.size).fill(null).map((item, i) => {
+      return (
+        <div key={i} className="board-row">
+          {Array(this.props.size).fill(null).map((item, j) => {
+            return this.renderSquare(this.props.size * i + j)
+          })}
+        </div>
+      );
+    });
     return (
       <div>
-        <div className="board-row">
-          {this.renderSquare(0)}
-          {this.renderSquare(1)}
-          {this.renderSquare(2)}
-        </div>
-        <div className="board-row">
-          {this.renderSquare(3)}
-          {this.renderSquare(4)}
-          {this.renderSquare(5)}
-        </div>
-        <div className="board-row">
-          {this.renderSquare(6)}
-          {this.renderSquare(7)}
-          {this.renderSquare(8)}
-        </div>
+        {board}
       </div>
     );
   }
@@ -51,11 +47,11 @@ class Game extends React.Component {
     super(props);
     this.state = {
       history: [{
-        squares: Array(9).fill(null),
+        squares: Array(props.boardSize ** 2).fill(null),
       }],
       stepNumber: 0,
       xIsNext: true,
-    }
+    };
   }
 
   handleClick(i) {
@@ -111,6 +107,7 @@ class Game extends React.Component {
       <div className="game">
         <div className="game-board">
           <Board
+            size={this.props.boardSize}
             squares={current.squares}
             onClick={(i) => this.handleClick(i)} />
         </div>
@@ -146,6 +143,6 @@ function calculateWinner(squares) {
 }
 
 ReactDOM.render(
-  <Game />,
+  <Game boardSize={3} />,
   document.querySelector("#root")
 );
